@@ -1,0 +1,82 @@
+﻿@model HotelAurelia.ViewModels.CreateReceptionnisteViewModel
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Nouveau réceptionniste";
+}
+
+<h1>Nouveau réceptionniste</h1>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <!-- User Info -->
+                    <h6 class="border-bottom pb-2 mb-3"><i class="fas fa-user"></i> Informations personnelles</h6>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label asp-for="Nom" class="form-label"></label>
+                            <input asp-for="Nom" class="form-control" />
+                            <span asp-validation-for="Nom" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label asp-for="Prenom" class="form-label"></label>
+                            <input asp-for="Prenom" class="form-control" />
+                            <span asp-validation-for="Prenom" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" type="email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label asp-for="Tel" class="form-label"></label>
+                            <input asp-for="Tel" class="form-control" />
+                            <span asp-validation-for="Tel" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- Login Credentials -->
+                    <h6 class="border-bottom pb-2 mb-3 mt-4"><i class="fas fa-lock"></i> Identifiants de connexion</h6>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label asp-for="Password" class="form-label"></label>
+                            <input asp-for="Password" class="form-control" type="password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label asp-for="ConfirmPassword" class="form-label"></label>
+                            <input asp-for="ConfirmPassword" class="form-control" type="password" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- Receptionniste Specific -->
+                    <h6 class="border-bottom pb-2 mb-3 mt-4"><i class="fas fa-briefcase"></i> Poste</h6>
+                    <div class="form-group">
+                        <label asp-for="Poste" class="form-label"></label>
+                        <input asp-for="Poste" class="form-control" />
+                        <span asp-validation-for="Poste" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <input type="submit" value="Créer" class="btn btn-success btn-lg" />
+                        <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

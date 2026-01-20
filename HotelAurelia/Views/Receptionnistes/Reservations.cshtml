@@ -1,0 +1,458 @@
+﻿@* Views/Receptionniste/Reservations.cshtml *@
+@model List<HotelAurelia.ViewModels.ReservationDetailsViewModel>
+@{
+    ViewData["Title"] = "Gestion des Réservations";
+    Layout = "_Layout"; // Use your main layout
+}
+
+
+    <style>
+        /* Minimal color scheme: dark yellow (#FFD700) and dark grey (#2C3E50) */
+        :root {
+            --primary-color: #FFD700; /* Dark yellow */
+            --secondary-color: #2C3E50; /* Dark grey */
+            --accent-color: #1a237e; /* Dark blue for accents */
+            --light-bg: #f8f9fa;
+            --border-color: #dee2e6;
+        }
+
+        .page-header {
+            background: var(--secondary-color);
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 40px;
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary-color);
+        }
+
+            .stats-card .stat-icon {
+                width: 50px;
+                height: 50px;
+                background: var(--primary-color);
+                color: var(--secondary-color);
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 15px;
+                font-size: 1.5rem;
+            }
+
+            .stats-card .stat-number {
+                font-size: 1.8rem;
+                font-weight: 700;
+                color: var(--secondary-color);
+                margin-bottom: 5px;
+            }
+
+            .stats-card .stat-title {
+                font-size: 1rem;
+                color: #6c757d;
+                margin-bottom: 5px;
+            }
+
+        .filter-card {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            padding: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            background: var(--secondary-color);
+            color: white;
+            padding: 20px 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .table-body {
+            padding: 25px;
+        }
+
+        .table th {
+            background: var(--light-bg);
+            color: var(--secondary-color);
+            font-weight: 600;
+            border-top: none;
+            padding: 15px;
+        }
+
+        .table td {
+            padding: 15px;
+            vertical-align: middle;
+            border-color: var(--border-color);
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(255, 215, 0, 0.05);
+        }
+
+        .badge {
+            padding: 5px 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border-radius: 4px;
+        }
+
+        .badge-enattente {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-confirmee {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-payee {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .badge-annulee {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .btn-primary-custom {
+            background: var(--primary-color);
+            color: var(--secondary-color);
+            border: none;
+            padding: 8px 20px;
+            font-weight: 600;
+        }
+
+            .btn-primary-custom:hover {
+                background: #e6c200;
+                color: var(--secondary-color);
+            }
+
+        .btn-outline-custom {
+            border: 2px solid var(--primary-color);
+            color: var(--secondary-color);
+            background: transparent;
+            padding: 8px 20px;
+            font-weight: 600;
+        }
+
+            .btn-outline-custom:hover {
+                background: var(--primary-color);
+                color: var(--secondary-color);
+            }
+
+        .avatar-circle {
+            width: 35px;
+            height: 35px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .action-buttons .btn {
+            padding: 5px 10px;
+            font-size: 0.875rem;
+        }
+
+        .btn-view {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+        }
+
+            .btn-view:hover {
+                background: #151f5e;
+                color: white;
+            }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+            .empty-state i {
+                font-size: 3rem;
+                margin-bottom: 20px;
+                color: #adb5bd;
+            }
+
+        .pagination .page-link {
+            color: var(--secondary-color);
+            border-color: var(--border-color);
+        }
+
+        .pagination .page-item.active .page-link {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: var(--secondary-color);
+        }
+    </style>
+
+
+<!--================Page Header Area =================-->
+<!--================Breadcrumb Area =================-->
+<section class="breadcrumb_area">
+    <div class="overlay bg-parallax" data-stellar-ratio="0.8" data-stellar-vertical-offset="0" data-background=""></div>
+    <div class="container">
+        <div class="page-cover text-center">
+            <h2 class="page-cover-tittle">Reservations</h2>
+            <ol class="breadcrumb">
+                <li><a href="/">Home</a></li>
+                <li class="active">Reservations</li>
+            </ol>
+        </div>
+    </div>
+</section>
+<!--================Breadcrumb Area =================--> 
+<section class="contact_area sec_pad">
+    <div class="container">
+        <!-- Stats Cards -->
+        @* <div class="row mb-4 mt-6">
+            <div class="col-lg-3 col-md-6">
+                <div class="stats-card">
+                    <div class="stat-icon">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                    <h3 class="stat-number">@ViewBag.TotalCount</h3>
+                    <p class="stat-title">Total Réservations</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stats-card">
+                    <div class="stat-icon">
+                        <i class="fa fa-clock-o"></i>
+                    </div>
+                    <h3 class="stat-number">@ViewBag.PendingCount</h3>
+                    <p class="stat-title">En Attente</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stats-card">
+                    <div class="stat-icon">
+                        <i class="fa fa-check-circle"></i>
+                    </div>
+                    <h3 class="stat-number">@ViewBag.ConfirmedCount</h3>
+                    <p class="stat-title">Confirmées</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stats-card">
+                    <div class="stat-icon">
+                        <i class="fa fa-euro"></i>
+                    </div>
+                    <h3 class="stat-number">@ViewBag.PaidCount</h3>
+                    <p class="stat-title">Payées</p>
+                </div>
+            </div>
+        </div> *@
+
+        <!-- Filters -->
+        <div class="filter-card">
+            <h5 class="mb-4" style="color: var(--secondary-color);">
+                <i class="fa fa-filter"></i> Filtres de Recherche
+            </h5>
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="search" value="@ViewBag.Search"
+                           placeholder="Nom, Email, Chambre...">
+                </div>
+                <div class="col-md-3">
+                    <select class="form-control" name="status">
+                        <option value="">Tous les statuts</option>
+                        <option value="EnAttente" selected="@(ViewBag.Status == "EnAttente")">En Attente</option>
+                        <option value="Confirmee" selected="@(ViewBag.Status == "Confirmee")">Confirmée</option>
+                        <option value="Payee" selected="@(ViewBag.Status == "Payee")">Payée</option>
+                        <option value="Annulee" selected="@(ViewBag.Status == "Annulee")">Annulée</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-control" name="sortBy">
+                        <option value="date" selected="@(ViewBag.SortBy == "date")">Date récente</option>
+                        <option value="client" selected="@(ViewBag.SortBy == "client")">Nom client</option>
+                        <option value="chambre" selected="@(ViewBag.SortBy == "chambre")">Numéro chambre</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary-custom w-100">
+                        <i class="fa fa-search"></i> Filtrer
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Reservations Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">Liste des Réservations</h4>
+                        <p class="mb-0 opacity-75">@Model.Count réservation(s) trouvée(s)</p>
+                    </div>
+                    <div>
+                        <a href="@Url.Action("Reservations")" class="btn btn-outline-custom">
+                            <i class="fa fa-refresh"></i> Actualiser
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-body">
+                @if (Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Client</th>
+                                    <th>Chambre</th>
+                                    <th>Dates</th>
+                                    <th>Total</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var reservation in Model)
+                                {
+                                    <tr>
+                                        <td>#@reservation.Id</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-circle">
+                                                    @reservation.UserNom[0]@reservation.UserPrenom[0]
+                                                </div>
+                                                <div>
+                                                    <strong>@reservation.UserNom @reservation.UserPrenom</strong>
+                                                    <div class="text-muted small">@reservation.UserEmail</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <strong>@reservation.ChambreNumero</strong>
+                                            <div class="text-muted small">@reservation.ChambreType</div>
+                                        </td>
+                                        <td>
+                                            <div>@reservation.DateDebut.ToString("dd/MM")</div>
+                                            <div class="text-muted small">au @reservation.DateFin.ToString("dd/MM")</div>
+                                        </td>
+                                        <td class="font-weight-bold" style="color: var(--accent-color);">
+                                            @reservation.CoutTotal.ToString("C")
+                                        </td>
+                                        <td>
+                                            @{
+                                                var badgeClass = "badge-" + reservation.Statut.ToString().ToLower();
+                                                var statusText = reservation.Statut.ToString();
+                                            }
+                                            <span class="badge @badgeClass">@statusText</span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a href="@Url.Action("ReservationDetails", new { id = reservation.Id })"
+                                                   class="btn btn-view" title="Voir détails">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+                                                @if (reservation.Statut == StatutReservation.EnAttente)
+                                                {
+                                                    <form method="post" action="@Url.Action("UpdateStatus", new { id = reservation.Id })"
+                                                          class="d-inline">
+                                                        @Html.AntiForgeryToken()
+                                                        <input type="hidden" name="newStatus" value="@StatutReservation.Confirmee" />
+                                                        <button type="submit" class="btn btn-sm btn-primary-custom ml-1" title="Confirmer">
+                                                            <i class="fa fa-check"></i>
+                                                        </button>
+                                                    </form>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <div class="text-muted">
+                            Page 1 sur 1
+                        </div>
+                        <nav>
+                            <ul class="pagination mb-0">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#">Précédent</a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#">Suivant</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="fa fa-calendar-times-o"></i>
+                        <h4 class="mb-3">Aucune réservation trouvée</h4>
+                        <p class="mb-4">Aucune réservation ne correspond à vos critères de recherche.</p>
+                        <a href="@Url.Action("Reservations")" class="btn btn-primary-custom">
+                            <i class="fa fa-times"></i> Réinitialiser les filtres
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    <script>
+        $(document).ready(function() {
+            // Initialize tooltips
+            $('[title]').tooltip();
+
+            // Auto-refresh every 3 minutes
+            setInterval(function() {
+                window.location.reload();
+            }, 180000);
+
+            // Status update confirmation
+            $('form[action*="UpdateStatus"]').on('submit', function(e) {
+                var status = $(this).find('input[name="newStatus"]').val();
+                if (status === 'Annulee') {
+                    if (!confirm('Êtes-vous sûr de vouloir annuler cette réservation ?')) {
+                        e.preventDefault();
+                        return false;
+                    }
+                }
+                return true;
+            });
+
+            // Show loading on filter submit
+            $('form[method="get"]').on('submit', function() {
+                $('button[type="submit"]').html('<i class="fa fa-spinner fa-spin"></i> Chargement...');
+            });
+        });
+    </script>

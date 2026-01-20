@@ -1,0 +1,164 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="~/image/favicon.png" type="image/png">
+    <title>Aurelia Hotel - Dashboard</title>
+
+    <!-- Dashboard CSS -->
+    <link rel="stylesheet" href="~/css/bootstrap.css">
+    <link rel="stylesheet" href="~/vendors/linericon/style.css">
+    <link rel="stylesheet" href="~/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/vendors/owl-carousel/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/vendors/nice-select/css/nice-select.css">
+    <!-- main css -->
+    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="~/css/responsive.css">
+
+    <!-- Dashboard Specific CSS -->
+    <style>
+        
+    </style>
+
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fa fa-hotel"></i> Aurelia Hotel</h3>
+                <small>Tableau de Bord Management</small>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="/Home/GerantDashboard" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "GerantDashboard" ? "active" : "")">
+                        <i class="fa fa-dashboard"></i> Tableau de Bord
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/Chambres" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Chambres" ? "active" : "")">
+                        <i class="fa fa-bed"></i> Chambres
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/Services" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Services" ? "active" : "")">
+                        <i class="fa fa-concierge-bell"></i> Services
+                    </a>
+                </li>
+
+                
+
+                <li>
+                    <a href="/Reservations" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Reservations" ? "active" : "")">
+                        <i class="fa fa-calendar-check"></i> Réservations
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/Receptionnistes" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Receptionnistes" ? "active" : "")">
+                        <i class="fa fa-user"></i>  Réceptionnistes
+                    </a>
+                </li>
+
+               
+
+                <li>
+                    <a href="/">
+                        <i class="fa fa-home"></i> Retour au Site
+                    </a>
+                </li>
+
+                <li>
+                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                        <button type="submit" class="btn btn-link logout-btn" style="text-align: left; width: 100%; padding: 15px 20px;">
+                            <i class="fa fa-sign-out"></i> Déconnexion
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="dashboard-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="mb-2">@ViewData["Title"]</h1>
+                        <p class="mb-0">@ViewData["Subtitle"]</p>
+                    </div>
+                    <div>
+                        <span class="badge-gerant">
+                            <i class="fa fa-user-shield"></i> Gerant
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fade-in">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="~/js/jquery-3.2.1.min.js"></script>
+    <script src="~/js/popper.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/vendors/owl-carousel/owl.carousel.min.js"></script>
+    <script src="~/vendors/nice-select/js/jquery.nice-select.js"></script>
+    <script src="~/js/custom.js"></script>
+
+    <!-- Dashboard Scripts -->
+    <script>
+        $(document).ready(function() {
+            // Auto-hide alerts
+            setTimeout(function() {
+                $('.alert').fadeOut('slow');
+            }, 5000);
+
+            // Confirm delete
+            $('.btn-delete').on('click', function(e) {
+                if (!confirm('Êtes-vous sûr de vouloir supprimer cet élément?')) {
+                    e.preventDefault();
+                }
+            });
+
+            // Active link highlighting
+            $('.sidebar-menu a').each(function() {
+                if ($(this).attr('href') === window.location.pathname) {
+                    $(this).addClass('active');
+                }
+            });
+
+            // Add animation to stat cards on scroll
+            $(window).scroll(function() {
+                $('.stat-card').each(function() {
+                    var position = $(this).offset().top;
+                    var scroll = $(window).scrollTop();
+                    var windowHeight = $(window).height();
+
+                    if (position < scroll + windowHeight - 100) {
+                        $(this).addClass('animate__animated animate__fadeInUp');
+                    }
+                });
+            });
+
+            // Initialize tooltips
+            $('[data-toggle="tooltip"]').tooltip();
+
+            // Mobile menu toggle
+            $('.navbar-toggler').click(function() {
+                $('.sidebar').toggleClass('mobile-show');
+            });
+        });
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

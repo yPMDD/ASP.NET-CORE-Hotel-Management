@@ -1,0 +1,633 @@
+﻿@model HotelAurelia.ViewModels.GerantDashboardViewModel
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Tableau de Bord Gérant";
+}
+
+
+    <style>
+        /* Minimal color scheme */
+        :root {
+            --primary-color: #FFD700; /* Dark yellow */
+            --secondary-color: #2C3E50; /* Dark grey */
+            --accent-color: #1a237e; /* Dark blue - minimal use */
+            --light-bg: #f8f9fa;
+            --border-color: #e0e0e0;
+            --success-color: #28a745; /* Keep green for success states */
+        }
+
+        /* Stat Cards */
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--primary-color);
+            transition: transform 0.2s ease;
+        }
+
+            .stat-card:hover {
+                transform: translateY(-3px);
+            }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--secondary-color);
+            color: var(--primary-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+        }
+
+        .stat-title {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-subtitle {
+            font-size: 0.85rem;
+            color: #adb5bd;
+        }
+
+        /* Table Container */
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Quick Actions */
+        .quick-action-item {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            background: var(--light-bg);
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+            .quick-action-item:hover {
+                background: #e9ecef;
+                border-left-color: var(--primary-color);
+                transform: translateX(3px);
+            }
+
+        /* Room Cards */
+        .room-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            transition: transform 0.2s ease;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+            .room-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+            }
+
+        .price {
+            color: var(--secondary-color);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* Buttons */
+        .btn-dashboard {
+            background: var(--primary-color);
+            color: var(--secondary-color);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+            .btn-dashboard:hover {
+                background: #e6c200;
+                color: var(--secondary-color);
+            }
+
+        .btn-outline-dashboard {
+            border: 2px solid var(--secondary-color);
+            color: var(--secondary-color);
+            background: transparent;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+            .btn-outline-dashboard:hover {
+                background: var(--secondary-color);
+                color: white;
+            }
+
+        /* Badges - simplified */
+        .badge {
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 4px;
+        }
+
+        .bg-success {
+            background: var(--success-color);
+        }
+
+        .bg-info {
+            background: #17a2b8;
+        }
+
+        .bg-warning {
+            background: var(--primary-color);
+            color: var(--secondary-color);
+        }
+
+        .bg-danger {
+            background: #dc3545;
+        }
+
+        .bg-secondary {
+            background: #6c757d;
+        }
+
+        /* Progress bars */
+        .progress {
+            height: 6px;
+            background-color: var(--light-bg);
+            border-radius: 3px;
+        }
+
+        .progress-bar {
+            border-radius: 3px;
+        }
+
+        /* Table styling */
+        .table th {
+            background: var(--light-bg);
+            color: var(--secondary-color);
+            font-weight: 600;
+            border-top: none;
+            padding: 15px;
+        }
+
+        .table td {
+            padding: 12px 15px;
+            vertical-align: middle;
+            border-color: var(--border-color);
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(255, 215, 0, 0.05);
+        }
+
+        /* Avatar placeholder */
+        .avatar-placeholder {
+            width: 32px;
+            height: 32px;
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        /* Alerts */
+        .alert {
+            border: none;
+            border-radius: 6px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+            .fade-in:nth-child(1) {
+                animation-delay: 0.1s;
+            }
+
+            .fade-in:nth-child(2) {
+                animation-delay: 0.2s;
+            }
+
+            .fade-in:nth-child(3) {
+                animation-delay: 0.3s;
+            }
+
+            .fade-in:nth-child(4) {
+                animation-delay: 0.4s;
+            }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Card image placeholder */
+        .card-img-placeholder {
+            height: 200px;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #34495e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+        }
+
+        /* Revenue percentage */
+        .revenue-up {
+            color: var(--success-color);
+        }
+
+        .revenue-down {
+            color: #dc3545;
+        }
+
+        /* Section headers */
+        h4 {
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .section-subtitle {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+    </style>
+
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card fade-in">
+            <div class="stat-icon">
+                <i class="fa fa-bed"></i>
+            </div>
+            <h3 class="stat-number">@Model.TotalChambres</h3>
+            <p class="stat-title">Chambres</p>
+            <small class="stat-subtitle">@Model.ChambresDisponibles disponibles</small>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card fade-in">
+            <div class="stat-icon">
+                <i class="fa fa-calendar"></i>
+            </div>
+            <h3 class="stat-number">@Model.TotalReservations</h3>
+            <p class="stat-title">Réservations</p>
+            <small class="stat-subtitle">Cette semaine: @Model.ReservationsCetteSemaine</small>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card fade-in">
+            <div class="stat-icon">
+                <i class="fa fa-users"></i>
+            </div>
+            <h3 class="stat-number">@Model.TotalReceptionnistes</h3>
+            <p class="stat-title">Réceptionnistes</p>
+            <small class="stat-subtitle">@Model.TotalReceptionnistes en service</small>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card fade-in">
+            <div class="stat-icon">
+                <i class="fa fa-euro"></i>
+            </div>
+            <h3 class="stat-number">@Model.RevenuMois.ToString("C")</h3>
+            <p class="stat-title">Revenu du mois</p>
+            <small class="stat-subtitle">
+                @if (Model.PourcentageChangementRevenu >= 0)
+                {
+                    <span class="revenue-up">+@Model.PourcentageChangementRevenu%</span>
+                }
+                else
+                {
+                    <span class="revenue-down">@Model.PourcentageChangementRevenu%</span>
+                }
+                vs dernier mois
+            </small>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <!-- Recent Reservations -->
+    <div class="col-lg-8">
+        <div class="table-container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4>Réservations Récentes</h4>
+                    <p class="section-subtitle mb-0">Dernières réservations de l'hôtel</p>
+                </div>
+                <a href="/Reservations" class="btn btn-dashboard">Voir Tout</a>
+            </div>
+
+            @if (Model.ReservationsRecentes.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Client</th>
+                                <th>Chambre</th>
+                                <th>Dates</th>
+                                <th>Total</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var reservation in Model.ReservationsRecentes)
+                            {
+                                <tr class="fade-in">
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-placeholder">
+                                                @reservation.ClientNom[0]
+                                            </div>
+                                            <span>@reservation.ClientNom</span>
+                                        </div>
+                                    </td>
+                                    <td>@reservation.ChambreNumero</td>
+                                    <td>@reservation.DateDebut.ToString("dd MMM") - @reservation.DateFin.ToString("dd MMM")</td>
+                                    <td class="fw-bold" style="color: var(--secondary-color);">@reservation.CoutTotal.ToString("C")</td>
+                                    <td>
+                                        @{
+                                            var badgeClass = reservation.Statut switch
+                                            {
+                                                StatutReservation.Confirmee => "bg-success",
+                                                StatutReservation.Payee => "bg-info",
+                                                StatutReservation.EnAttente => "bg-warning",
+                                                StatutReservation.Annulee => "bg-danger",
+                                                _ => "bg-secondary"
+                                            };
+                                            var statusText = reservation.Statut.ToString();
+                                        }
+                                        <span class="badge @badgeClass">@statusText</span>
+                                    </td>
+                                    <td class="action-buttons">
+                                        <a href="/Reservations/Details/@reservation.Id" class="btn btn-sm"
+                                           style="background: var(--secondary-color); color: white;"
+                                           data-toggle="tooltip" title="Voir détails">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    <i class="fa fa-info-circle me-2"></i>Aucune réservation récente.
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="col-lg-4">
+        <div class="table-container">
+            <h4 class="mb-4">Actions Rapides</h4>
+
+            <div class="quick-action-item">
+                <a href="/Chambres/Create" class="text-decoration-none">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon" style="width: 50px; height: 50px; margin-bottom: 0; margin-right: 15px;">
+                            <i class="fa fa-plus"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">Ajouter une Chambre</h6>
+                            <small class="text-muted">Nouvelle chambre disponible</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="quick-action-item">
+                <a href="/Receptionnistes/Create" class="text-decoration-none">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon" style="width: 50px; height: 50px; margin-bottom: 0; margin-right: 15px;">
+                            <i class="fa fa-user-plus"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">Ajouter Réceptionniste</h6>
+                            <small class="text-muted">Nouveau personnel</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="quick-action-item">
+                <a href="/Services/Create" class="text-decoration-none">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon" style="width: 50px; height: 50px; margin-bottom: 0; margin-right: 15px;">
+                            <i class="fa fa-concierge-bell"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">Ajouter Service</h6>
+                            <small class="text-muted">Nouveau service hôtelier</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="mt-4">
+                <h6 class="mb-3" style="color: var(--secondary-color);">Statut du Système</h6>
+                <div class="d-flex justify-content-between mb-2">
+                    <small>Chambres occupées</small>
+                    <small class="@(Model.TotalChambres - Model.ChambresDisponibles > Model.TotalChambres * 0.8 ? "text-danger" : "text-muted")">
+                        @if (Model.TotalChambres > 0)
+                        {
+                            var tauxOccupation = (int)((double)(Model.TotalChambres - Model.ChambresDisponibles) / Model.TotalChambres * 100);
+                            @($"{tauxOccupation}%")
+                        }
+                        else
+                        {
+                            @("0%")
+                        }
+                    </small>
+                </div>
+                <div class="progress mb-3">
+                    @if (Model.TotalChambres > 0)
+                    {
+                        var tauxOccupation = (double)(Model.TotalChambres - Model.ChambresDisponibles) / Model.TotalChambres * 100;
+                        var progressColor = tauxOccupation > 80 ? "bg-danger" : tauxOccupation > 60 ? "bg-warning" : "bg-success";
+                        <div class="progress-bar @progressColor" style="width: @tauxOccupation%"></div>
+                    }
+                    else
+                    {
+                        <div class="progress-bar" style="width: 0%"></div>
+                    }
+                </div>
+
+                <div class="d-flex justify-content-between mb-2">
+                    <small>Réservations confirmées</small>
+                    <small class="text-muted">
+                        @if (Model.ReservationsRecentes.Any())
+                        {
+                            var confirmedCount = Model.ReservationsRecentes.Count(r => r.Statut == StatutReservation.Confirmee || r.Statut == StatutReservation.Payee);
+                            var confirmationRate = (int)((double)confirmedCount / Model.ReservationsRecentes.Count * 100);
+                            @($"{confirmationRate}%")
+                        }
+                        else
+                        {
+                            @("100%")
+                        }
+                    </small>
+                </div>
+                <div class="progress">
+                    @if (Model.ReservationsRecentes.Any())
+                    {
+                        var confirmedCount = Model.ReservationsRecentes.Count(r => r.Statut == StatutReservation.Confirmee || r.Statut == StatutReservation.Payee);
+                        var confirmationRate = (double)confirmedCount / Model.ReservationsRecentes.Count * 100;
+                        <div class="progress-bar bg-success" style="width: @confirmationRate%"></div>
+                    }
+                    else
+                    {
+                        <div class="progress-bar bg-success" style="width: 100%"></div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Popular Rooms -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="table-container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4>Chambres Populaires</h4>
+                    <p class="section-subtitle mb-0">Les chambres les plus réservées</p>
+                </div>
+                <a href="/Chambres" class="btn btn-outline-dashboard">Toutes les Chambres</a>
+            </div>
+
+            @if (Model.ChambresPopulaires.Any())
+            {
+                <div class="row">
+                    @foreach (var chambre in Model.ChambresPopulaires)
+                    {
+                        <div class="col-lg-4 col-md-6">
+                            <div class="room-card fade-in">
+                                @if (!string.IsNullOrEmpty(chambre.Image))
+                                {
+                                    <img src="~/image/chambres/@chambre.Image" class="card-img-top" alt="Chambre @chambre.Numero" style="height: 200px; object-fit: cover;">
+                                }
+                                else
+                                {
+                                    <div class="card-img-placeholder">
+                                        <i class="fa fa-bed fa-3x"></i>
+                                    </div>
+                                }
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="card-title mb-0" style="color: var(--secondary-color);">Chambre @chambre.Numero</h5>
+                                        @{
+                                            var etatBadgeClass = chambre.Etat switch
+                                            {
+                                                EtatChambre.Disponible => "bg-success",
+                                                EtatChambre.Reservee => "bg-warning",
+                                                EtatChambre.Maintenance => "bg-danger",
+                                                _ => "bg-secondary"
+                                            };
+                                            var etatText = chambre.Etat.ToString();
+                                        }
+                                        <span class="badge @etatBadgeClass">@etatText</span>
+                                    </div>
+                                    <p class="card-text text-muted mb-2">
+                                        <i class="fa fa-bed me-1"></i> @chambre.Capacite Lits
+                                        @if (!string.IsNullOrEmpty(chambre.Type))
+                                        {
+                                            <i class="fa fa-tag ms-3 me-1"></i>
+                                            @chambre.Type
+                                        }
+                                    </p>
+                                    <p class="mb-3">
+                                        <small class="text-muted">
+                                            <i class="fa fa-calendar me-1"></i> Réservée @chambre.NombreReservations fois
+                                        </small>
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="price">@chambre.Tarif.ToString("C")/nuit</span>
+                                        <div class="btn-group">
+                                            <a href="/Chambres/Edit/@chambre.Id" class="btn btn-sm"
+                                               style="background: var(--secondary-color); color: white;" title="Modifier">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <a href="/Chambres/Details/@chambre.Id" class="btn btn-sm"
+                                               style="background: var(--primary-color); color: var(--secondary-color);" title="Détails">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    <i class="fa fa-info-circle me-2"></i>Aucune donnée sur les chambres populaires.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+    <script>
+        $(document).ready(function() {
+            // Initialize tooltips
+            $('[data-toggle="tooltip"]').tooltip();
+
+            // Auto-refresh dashboard every 2 minutes
+            setTimeout(function() {
+                window.location.reload();
+            }, 120000); // 2 minutes
+        });
+    </script>

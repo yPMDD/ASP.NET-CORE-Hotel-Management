@@ -1,0 +1,27 @@
+﻿/* wwwroot/css/profile.css */
+.avatar-placeholder {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.stat-box {
+    transition: transform 0.3s ease;
+}
+
+    .stat-box:hover {
+        transform: translateY(-5px);
+    }
+
+.timeline-box {
+    border-left: 4px solid #0d6efd;
+}
+
+.room-features div {
+    padding: 8px 0;
+    border-bottom: 1px dashed #dee2e6;
+}
+
+    .room-features div:last-child {
+        border-bottom: none;
+    }

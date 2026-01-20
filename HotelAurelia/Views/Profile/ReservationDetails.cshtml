@@ -1,0 +1,169 @@
+﻿@* Views/Profile/ReservationDetails.cshtml *@
+@model HotelAurelia.ViewModels.ReservationWithDetails
+@{
+    ViewData["Title"] = "Reservation Details";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-file-invoice me-2"></i>
+                            Reservation #@Model.Id
+                        </h4>
+                        <span class="badge @GetStatusBadgeClass(Model.Statut)" style="font-size: 1rem;">
+                            @Model.Statut
+                        </span>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <!-- Reservation Timeline -->
+                    <div class="timeline mb-5">
+                        <div class="row text-center">
+                            <div class="col-md-6">
+                                <div class="timeline-box p-3 bg-light rounded">
+                                    <h5 class="text-primary">Check-in</h5>
+                                    <h4>@Model.DateDebut.ToString("dddd")</h4>
+                                    <h3 class="text-success">@Model.DateDebut.ToString("MMM dd, yyyy")</h3>
+                                    <p class="text-muted mb-0">After 2:00 PM</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="timeline-box p-3 bg-light rounded">
+                                    <h5 class="text-primary">Check-out</h5>
+                                    <h4>@Model.DateFin.ToString("dddd")</h4>
+                                    <h3 class="text-success">@Model.DateFin.ToString("MMM dd, yyyy")</h3>
+                                    <p class="text-muted mb-0">Before 12:00 PM</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center mt-3">
+                            <div class="badge bg-info text-white">
+                                <i class="fas fa-moon me-1"></i> @Model.Nights nights
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Room Details -->
+                    <div class="room-details mb-4">
+                        <h5 class="border-bottom pb-2 mb-3">
+                            <i class="fas fa-bed me-2"></i>Room Details
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-3">
+                                @if (!string.IsNullOrEmpty(Model.ChambreImage))
+                                {
+                                    <img src="~/image/chambres/@Model.ChambreImage"
+                                         alt="@Model.ChambreType"
+                                         class="img-fluid rounded shadow">
+                                }
+                                else
+                                {
+                                    <div class="bg-secondary text-white rounded d-flex align-items-center justify-content-center"
+                                         style="height: 150px;">
+                                        <i class="fas fa-bed fa-3x"></i>
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-9">
+                                <h4>Room @Model.ChambreNumero</h4>
+                                <p class="text-muted">@Model.ChambreType Room</p>
+                                <div class="room-features">
+                                    <div class="d-flex justify-content-between">
+                                        <span><i class="fas fa-tag me-2"></i>Nightly Rate:</span>
+                                        <strong>@Model.ChambreTarif.ToString("C")</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Service Details (if any) -->
+                    @if (!string.IsNullOrEmpty(Model.ServiceNom))
+                    {
+                        <div class="service-details mb-4">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="fas fa-concierge-bell me-2"></i>Additional Service
+                            </h5>
+                            <div class="card border-warning">
+                                <div class="card-body">
+                                    <h5>@Model.ServiceNom</h5>
+                                    <p class="text-muted">@Model.ServiceDescription</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge bg-warning text-dark">Service Fee: @Model.ServiceTarif?.ToString("C")</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Price Breakdown -->
+                    <div class="price-breakdown">
+                        <h5 class="border-bottom pb-2 mb-3">
+                            <i class="fas fa-receipt me-2"></i>Price Breakdown
+                        </h5>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td>Room @Model.ChambreNumero × @Model.Nights nights</td>
+                                        <td class="text-end">@((Model.ChambreTarif * Model.Nights).ToString("C"))</td>
+                                    </tr>
+                                    @if (Model.ServiceTarif.HasValue)
+                                    {
+                                        <tr>
+                                            <td>@Model.ServiceNom Service</td>
+                                            <td class="text-end">@Model.ServiceTarif.Value.ToString("C")</td>
+                                        </tr>
+                                    }
+                                    <tr class="table-active">
+                                        <td><strong>Total Amount</strong></td>
+                                        <td class="text-end"><strong>@Model.CoutTotal.ToString("C")</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="mt-4">
+                        <a href="@Url.Action("Index", "Profile")" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Profile
+                        </a>
+
+                        @if (Model.Statut == StatutReservation.Confirmee && Model.DateDebut > DateTime.Now.AddDays(1))
+                        {
+                            <form method="post"
+                                  action="@Url.Action("CancelReservation", "Profile", new { id = Model.Id })"
+                                  class="d-inline"
+                                  onsubmit="return confirm('Are you sure you want to cancel this reservation?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-danger ms-2">
+                                    <i class="fas fa-times me-2"></i>Cancel Reservation
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetStatusBadgeClass(StatutReservation statut)
+    {
+        return statut switch
+        {
+            StatutReservation.Confirmee => "bg-success",
+            StatutReservation.Payee => "bg-info",
+            StatutReservation.EnAttente => "bg-warning",
+            StatutReservation.Annulee => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+}

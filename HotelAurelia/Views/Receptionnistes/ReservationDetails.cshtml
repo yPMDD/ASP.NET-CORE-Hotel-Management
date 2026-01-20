@@ -1,0 +1,494 @@
+﻿@* Views/Receptionniste/ReservationDetails.cshtml *@
+@model HotelAurelia.ViewModels.ReservationDetailsViewModel
+@{
+    ViewData["Title"] = "Détails Réservation #" + Model.Id;
+    Layout = "_Layout";
+}
+
+
+    <style>
+        :root {
+            --primary-color: #FFD700;
+            --secondary-color: #2C3E50;
+            --accent-color: #1a237e;
+            --light-bg: #f8f9fa;
+            --border-color: #dee2e6;
+        }
+
+        .page-header {
+            background: var(--secondary-color);
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 40px;
+        }
+
+        .detail-card {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+        }
+
+            .detail-card .card-title {
+                color: var(--secondary-color);
+                border-bottom: 2px solid var(--primary-color);
+                padding-bottom: 15px;
+                margin-bottom: 20px;
+                font-weight: 600;
+            }
+
+        .info-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+            .info-item:last-child {
+                border-bottom: none;
+            }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            color: #495057;
+        }
+
+        .status-badge {
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .status-enattente {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-confirmee {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-payee {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-annulee {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .timeline-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+            .timeline-card .date {
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: var(--accent-color);
+                margin-bottom: 5px;
+            }
+
+            .timeline-card .label {
+                color: #6c757d;
+                font-size: 0.9rem;
+            }
+
+        .price-summary {
+            background: var(--light-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .price-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .btn-action {
+            padding: 10px 20px;
+            font-weight: 600;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-confirm {
+            background: var(--primary-color);
+            color: var(--secondary-color);
+            border: none;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            color: #dc3545;
+            border: 2px solid #dc3545;
+        }
+
+        .room-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .room-placeholder {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, var(--accent-color) 0%, #283593 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+    </style>
+
+
+<!--================Page Header Area =================-->
+@* <section class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb" style="background: transparent; padding: 0;">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Reservations", "Receptionniste")" style="color: rgba(255,255,255,0.8);">Réservations</a></li>
+                        <li class="breadcrumb-item active" aria-current="page" style="color: white;">Détails #@Model.Id</li>
+                    </ol>
+                </nav>
+                <h1 class="mb-3">Réservation #@Model.Id</h1>
+                <div class="d-flex align-items-center">
+                    <span class="status-badge status-@Model.Statut.ToString().ToLower() me-3">
+                        @Model.Statut.ToString()
+                    </span>
+                    <span style="color: rgba(255,255,255,0.8);">
+                        <i class="fa fa-calendar me-1"></i> Créée le @Model.DateCreation.ToString("dd/MM/yyyy")
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a href="@Url.Action("Reservations", "Receptionnistes")" class="btn btn-outline-custom" style="border-color: white; color: white;">
+                    <i class="fa fa-arrow-left"></i> Retour
+                </a>
+            </div>
+        </div>
+    </div>
+</section> *@
+<!--================Breadcrumb Area =================-->
+<section class="breadcrumb_area">
+    <div class="overlay bg-parallax" data-stellar-ratio="0.8" data-stellar-vertical-offset="0" data-background=""></div>
+    <div class="container">
+        <div class="page-cover text-center">
+            <h2 class="page-cover-tittle">Réservation #@Model.Id</h2>
+            <ol class="breadcrumb">
+                <li><a href="/">Home</a></li>
+                <li class="active">Reservations</li>
+            </ol>
+        </div>
+    </div>
+</section>
+<!--================Breadcrumb Area =================-->
+<!--================Reservation Details Area =================-->
+<section class="contact_area sec_pad">
+    <div class="container">
+        <div class="row">
+            <!-- Left Column: Reservation Details -->
+            <div class="col-lg-8">
+                <!-- Timeline -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="timeline-card">
+                            <div class="label">CHECK-IN</div>
+                            <div class="date">@Model.DateDebut.ToString("dd MMM")</div>
+                            <div class="text-muted mb-2">@Model.DateDebut.ToString("dddd")</div>
+                            <small class="label">Après 14:00</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="timeline-card">
+                            <div class="label">CHECK-OUT</div>
+                            <div class="date">@Model.DateFin.ToString("dd MMM")</div>
+                            <div class="text-muted mb-2">@Model.DateFin.ToString("dddd")</div>
+                            <small class="label">Avant 12:00</small>
+                        </div>
+                    </div>
+                    <div class="col-12 text-center">
+                        <span class="badge" style="background: var(--accent-color); color: white; padding: 8px 20px;">
+                            <i class="fa fa-moon"></i> @Model.Nuits nuits
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Room Details -->
+                <div class="detail-card">
+                    <h5 class="card-title">
+                        <i class="fa fa-bed"></i> Détails de la Chambre
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-4">
+                            @if (!string.IsNullOrEmpty(Model.ChambreImage))
+                            {
+                                <img src="~/image/chambres/@Model.ChambreImage"
+                                     alt="Chambre @Model.ChambreNumero"
+                                     class="room-image">
+                            }
+                            else
+                            {
+                                <div class="room-placeholder">
+                                    <i class="fa fa-bed"></i>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-8">
+                            <div class="info-item">
+                                <div class="info-label">Numéro de chambre</div>
+                                <div class="info-value h5">@Model.ChambreNumero</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Type de chambre</div>
+                                <div class="info-value">@Model.ChambreType</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Tarif par nuit</div>
+                                <div class="info-value h5" style="color: var(--accent-color);">
+                                    @Model.ChambreTarif.ToString("C")
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Client Information -->
+                <div class="detail-card">
+                    <h5 class="card-title">
+                        <i class="fa fa-user"></i> Informations du Client
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <div class="info-label">Nom complet</div>
+                                <div class="info-value">@Model.UserNom @Model.UserPrenom</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Email</div>
+                                <div class="info-value">
+                                    <a href="mailto:@Model.UserEmail" style="color: var(--accent-color);">@Model.UserEmail</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <div class="info-label">Téléphone</div>
+                                <div class="info-value">
+                                    @if (!string.IsNullOrEmpty(Model.UserPhone))
+                                    {
+                                        <a href="tel:@Model.UserPhone" style="color: var(--accent-color);">@Model.UserPhone</a>
+                                    }
+                                    else if (!string.IsNullOrEmpty(Model.UserTel))
+                                    {
+                                        <span>@Model.UserTel</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Non renseigné</span>
+                                    }
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">ID Client</div>
+                                <div class="info-value">
+                                    <code>@Model.UserId.Substring(0, 8)...</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <a href="@Url.Action("ClientDetails", "Receptionniste", new { id = Model.UserId })"
+                           class="btn btn-sm" style="background: var(--accent-color); color: white;">
+                            <i class="fa fa-user-circle"></i> Voir le profil client
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Service Details -->
+                @if (!string.IsNullOrEmpty(Model.ServiceNom))
+                {
+                    <div class="detail-card">
+                        <h5 class="card-title">
+                            <i class="fa fa-concierge-bell"></i> Service Additionnel
+                        </h5>
+                        <div class="info-item">
+                            <div class="info-label">Service</div>
+                            <div class="info-value">@Model.ServiceNom</div>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.ServiceDescription))
+                        {
+                            <div class="info-item">
+                                <div class="info-label">Description</div>
+                                <div class="info-value">@Model.ServiceDescription</div>
+                            </div>
+                        }
+                        <div class="info-item">
+                            <div class="info-label">Tarif du service</div>
+                            <div class="info-value" style="color: var(--accent-color); font-weight: 600;">
+                                @Model.ServiceTarif?.ToString("C")
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Right Column: Actions & Summary -->
+            <div class="col-lg-4">
+                <!-- Price Summary -->
+                <div class="detail-card">
+                    <h5 class="card-title">
+                        <i class="fa fa-receipt"></i> Récapitulatif
+                    </h5>
+                    <div class="price-summary">
+                        <div class="price-item">
+                            <span>Chambre @Model.ChambreNumero × @Model.Nuits nuits</span>
+                            <span>@((Model.ChambreTarif * Model.Nuits).ToString("C"))</span>
+                        </div>
+                        @if (Model.ServiceTarif.HasValue)
+                        {
+                            <div class="price-item">
+                                <span>Service @Model.ServiceNom</span>
+                                <span>@Model.ServiceTarif.Value.ToString("C")</span>
+                            </div>
+                        }
+                        <div class="price-total">
+                            <span>Total</span>
+                            <span>@Model.CoutTotal.ToString("C")</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="detail-card">
+                    <h5 class="card-title">
+                        <i class="fa fa-cogs"></i> Actions
+                    </h5>
+                    <div class="d-flex flex-wrap">
+                        @if (Model.Statut == StatutReservation.EnAttente)
+                        {
+                            <form method="post" action="@Url.Action("UpdateStatus", new { id = Model.Id })" class="mb-2">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="newStatus" value="@StatutReservation.Confirmee" />
+                                <button type="submit" class="btn btn-action btn-confirm">
+                                    <i class="fa fa-check"></i> Confirmer
+                                </button>
+                            </form>
+                        }
+
+                        @if (Model.Statut == StatutReservation.Confirmee)
+                        {
+                            <form method="post" action="@Url.Action("UpdateStatus", new { id = Model.Id })" class="mb-2">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="newStatus" value="@StatutReservation.Payee" />
+                                <button type="submit" class="btn btn-action" style="background: var(--accent-color); color: white;">
+                                    <i class="fa fa-euro"></i> Marquer payée
+                                </button>
+                            </form>
+                        }
+
+                        @if (Model.Statut != StatutReservation.Annulee)
+                        {
+                            <form method="post" action="@Url.Action("UpdateStatus", new { id = Model.Id })"
+                                  class="mb-2"
+                                  onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="newStatus" value="@StatutReservation.Annulee" />
+                                <button type="submit" class="btn btn-action btn-cancel">
+                                    <i class="fa fa-times"></i> Annuler
+                                </button>
+                            </form>
+                        }
+                    </div>
+
+                    <hr class="my-3">
+
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-custom" onclick="window.print()">
+                            <i class="fa fa-print"></i> Imprimer
+                        </button>
+                        <a href="mailto:@Model.UserEmail" class="btn btn-outline-custom">
+                            <i class="fa fa-envelope"></i> Envoyer email
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Info -->
+                <div class="detail-card">
+                    <h5 class="card-title">
+                        <i class="fa fa-info-circle"></i> Informations
+                    </h5>
+                    <div class="info-item">
+                        <div class="info-label">Numéro de réservation</div>
+                        <div class="info-value">#@Model.Id</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Date de création</div>
+                        <div class="info-value">@Model.DateCreation.ToString("dd/MM/yyyy HH:mm")</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Durée du séjour</div>
+                        <div class="info-value">@Model.Nuits nuits</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Chambre</div>
+                        <div class="info-value">@Model.ChambreNumero (@Model.ChambreType)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <script>
+        $(document).ready(function() {
+            // Print functionality
+            $('[onclick="window.print()"]').on('click', function() {
+                window.print();
+            });
+
+            // Status update confirmation
+            $('form[action*="UpdateStatus"]').on('submit', function(e) {
+                var status = $(this).find('input[name="newStatus"]').val();
+                if (status === 'Annulee') {
+                    if (!confirm('Êtes-vous sûr de vouloir annuler cette réservation ?')) {
+                        e.preventDefault();
+                        return false;
+                    }
+                }
+                return true;
+            });
+        });
+    </script>

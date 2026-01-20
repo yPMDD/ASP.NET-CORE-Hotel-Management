@@ -1,0 +1,40 @@
+﻿@model IEnumerable<HotelAurelia.Models.Receptionniste>
+
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Réceptionnistes";
+}
+
+<h1>Réceptionnistes</h1>
+
+<p><a asp-action="Create" class="btn btn-primary">Nouveau</a></p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Poste</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.User?.Nom</td>           <!-- Via User navigation -->
+                <td>@item.User?.Prenom</td>        <!-- Via User navigation -->
+                <td>@item.User?.Email</td>         <!-- Via User navigation -->
+                <td>@item.User?.Tel</td>           <!-- Via User navigation -->
+                <td>@(item.Poste ?? "N/A")</td>    <!-- Direct property -->
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
